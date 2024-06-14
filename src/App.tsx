@@ -1,33 +1,48 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useCallback, useState } from "react";
+import { Container, Grid, Typography } from "@mui/material";
 import "./App.css";
+import { FolderOutside } from "./components/FolderOutside";
+import { FolderInside } from "./components/FolderInside";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+  const handleFolderClick = useCallback((title: string) => {
+    setSelectedFolder(title);
+  }, []);
+  const handleBack = useCallback(() => {
+    setSelectedFolder(null);
+  }, []);
+  const folders = [
+    { title: "Do It Now", bgColor: "lightblue" },
+    { title: "Take Action", bgColor: "lightgreen" },
+    { title: "Waiting For", bgColor: "lightcoral" },
+    { title: "General", bgColor: "lightgoldenrodyellow" },
+    { title: "Project", bgColor: "lightpink" },
+  ];
+
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Container sx={{ mt: 4 }}>
+      {selectedFolder ? (
+        <FolderInside title={selectedFolder} onBack={handleBack} />
+      ) : (
+        <>
+          <Typography variant="h3" component="div" gutterBottom>
+            Action Minder
+          </Typography>
+          <Grid container spacing={3} justifyContent="center">
+            {folders.map((folder) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={folder.title}>
+                <FolderOutside
+                  title={folder.title}
+                  onClick={() => handleFolderClick(folder.title)}
+                  bgColor={folder.bgColor}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </>
+      )}
+    </Container>
   );
 }
 
